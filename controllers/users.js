@@ -1,7 +1,7 @@
 const User = require("../models/user");
 
 // GET all users
-exports.getUsers = (req, res) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).json(users))
     .catch((err) =>
@@ -10,7 +10,7 @@ exports.getUsers = (req, res) => {
 };
 
 // GET a single user by _id
-exports.getUser = (req, res) => {
+const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -24,16 +24,22 @@ exports.getUser = (req, res) => {
 };
 
 // POST a new user
-exports.createUser = (req, res) => {
+const createUser = (req, res) => {
   const { name, avatar } = req.body;
   User.create({ name, avatar })
-    .then((user) => res.status(201).json(user))
+    .then((user) => res.send(user))
     .catch((err) => {
+      console.error(err);
       if (err.name === "ValidationError") {
         return res
-          .status(400)
-          .json({ message: "Invalid user data provided", error: err });
+          .status(ERROR_CODES.INVALID_DATA)
+          .send({ message: "Invalid user data provided" });
+      } else {
+        return res
+          .status(ERROR_CODES.SERVER_ERROR)
+          .send({ message: "An error has occurred on the server" });
       }
-      res.status(500).json({ message: "Error creating user", error: err });
     });
 };
+
+module.exports = { createUser, getUsers, getUser };
