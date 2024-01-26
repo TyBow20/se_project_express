@@ -23,6 +23,7 @@
 
 const clothingItem = require("../models/clothingItem");
 const ClothingItem = require("../models/clothingItem");
+const ERROR_CODES = require("../utils/errors");
 
 const createItem = (req, res) => {
   console.log(req);
@@ -48,27 +49,76 @@ const createItem = (req, res) => {
     });
 };
 
+// start new code getItems
+
+// const getItems = (req, res) => {
+//   ClothingItem.find({})
+//     .then((items) => {
+//       res.status(200).send({ data: items });
+//     })
+//     .catch((err) => {
+//       res.status(500).send({ message: "Error getting items", err });
+//     });
+// };
+
 const getItems = (req, res) => {
-  ClothingItem.find({})
-    .then((items) => {
-      res.status(200).send({ data: items });
+  ClothingItem.findById(req.params.id)
+    .orFail(() => {
+      const error = new Error("Clothing item not found");
+      error.statusCode = ERROR_CODES.NOT_FOUND;
+      throw error;
     })
+    .then((item) => res.send(item))
     .catch((err) => {
-      res.status(500).send({ message: "Error getting items", err });
+      console.error(err);
+      res
+        .status(err.statusCode || ERROR_CODES.SERVER_ERROR)
+        .send({ message: err.message || "An error has occurred" });
     });
 };
+
+// end updated getItems code
+
+// start new code updateItem
+
+// const updateItem = (req, res) => {
+//   const { id } = req.params;
+//   const { imageURL } = req.body;
+
+//   ClothingItem.findByIdAndUpdate(id, { $set: { imageURL } }, { new: true })
+//     .orFail()
+//     .then((item) => res.status(200).send({ data: item }))
+//     .catch((err) => {
+//       res.status(500).send({ message: "Error updating item", err });
+//     });
+// };
 
 const updateItem = (req, res) => {
-  const { id } = req.params;
-  const { imageURL } = req.body;
-
-  ClothingItem.findByIdAndUpdate(id, { $set: { imageURL } }, { new: true })
-    .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+  ClothingItem.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+    .orFail(() => {
+      const error = new Error("Clothing item not found");
+      error.statusCode = ERROR_CODES.NOT_FOUND;
+      throw error;
+    })
+    .then((updatedItem) => res.send(updatedItem))
     .catch((err) => {
-      res.status(500).send({ message: "Error updating item", err });
+      console.error(err);
+      if (err.name === "ValidationError") {
+        res
+          .status(ERROR_CODES.INVALID_DATA)
+          .send({ message: "Invalid update data" });
+      } else {
+        res
+          .status(err.statusCode || ERROR_CODES.SERVER_ERROR)
+          .send({ message: err.message || "An error has occurred" });
+      }
     });
 };
+
+// end updated updateItem code
 
 const deleteItem = (req, res) => {
   const { id } = req.params;
@@ -82,9 +132,35 @@ const deleteItem = (req, res) => {
     });
 };
 
+const likeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { likes: req.user._id } }, // Add _id to the array if it's not there yet
+    { new: true },
+  )
+    .then((item) => res.json(item))
+    .catch((err) =>
+      res.status(500).json({ message: "An error occurred", error: err }),
+    );
+};
+
+const dislikeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.id,
+    { $pull: { likes: req.user._id } }, // Remove _id from the array
+    { new: true },
+  )
+    .then((item) => res.json(item))
+    .catch((err) =>
+      res.status(500).json({ message: "An error occurred", error: err }),
+    );
+};
+
 module.exports = {
   createItem,
   getItems,
   updateItem,
   deleteItem,
+  likeItem,
+  dislikeItem,
 };
