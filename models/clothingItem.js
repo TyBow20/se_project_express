@@ -22,7 +22,7 @@
 
 // module.exports = mongoose.model("clothingItems", clothingItem);
 
-//updated code with added fields
+// updated code with added fields
 
 const mongoose = require("mongoose");
 const validator = require("validator");

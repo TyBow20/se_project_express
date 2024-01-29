@@ -22,7 +22,7 @@
 //   extends: "airbnb-base",
 // };
 
-//Kevin provided new eslint file
+// Kevin provided new eslint file
 module.exports = {
   root: true,
   env: {
@@ -38,5 +38,6 @@ module.exports = {
   rules: {
     "no-console": "off",
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
+    "consistent-return": "off",
   },
 };

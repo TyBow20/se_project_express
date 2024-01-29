@@ -1,7 +1,8 @@
 const express = require("express");
+
 const router = express.Router();
-const User = require("../models/user");
-const ERROR_CODES = require("../utils/errors");
+// const User = require("../models/user");
+// const ERROR_CODES = require("../utils/errors");
 const { getUsers, getUser, createUser } = require("../controllers/users");
 
 // GET all users

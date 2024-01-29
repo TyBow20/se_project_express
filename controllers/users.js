@@ -58,11 +58,11 @@ const createUser = (req, res) => {
         return res
           .status(ERROR_CODES.INVALID_DATA)
           .send({ message: "Invalid user data provided" });
-      } else {
+      } 
         return res
           .status(ERROR_CODES.SERVER_ERROR)
           .send({ message: "An error has occurred on the server" });
-      }
+      
     });
 };
 

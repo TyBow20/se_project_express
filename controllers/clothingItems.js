@@ -21,7 +21,6 @@
 
 // updated code with added fields
 
-const clothingItem = require("../models/clothingItem");
 const ClothingItem = require("../models/clothingItem");
 const ERROR_CODES = require("../utils/errors");
 
@@ -29,7 +28,7 @@ const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
 
-  const { name, weather, imageUrl, owner } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
   const newItem = {
     name,
@@ -95,7 +94,8 @@ const getItems = (req, res) => {
   ClothingItem.findById(req.params.id)
     .then((item) => {
       if (!item) {
-        return res.status(200).send([]);
+        res.status(200).send([]);
+        return;
       }
 
       res.send(item);
@@ -161,7 +161,8 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(400).send({ message: "Invalid ID format" });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Item not found" });
       }
 
@@ -194,7 +195,8 @@ const likeItem = (req, res) => {
     .catch((err) => {
       if (err.message === "DocumentNotFoundError") {
         return res.status(404).json({ message: "Item not found" });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(400).json({ message: "Invalid ID format" });
       }
 
@@ -227,7 +229,8 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       if (err.message === "DocumentNotFoundError") {
         return res.status(404).json({ message: "Item not found" });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(400).json({ message: "Invalid ID format" });
       }
 
