@@ -1,26 +1,3 @@
-// const e = require("express");
-// const ClothingItem = require("../models/clothingItem");
-// const createItem = (req, res) => {
-//   console.log(req);
-//   console.log(req.body);
-
-//   const { name, weather, imageURL } = req.body;
-
-//   ClothingItem.create({ name, weather, imageURL })
-//     .then((item) => {
-//       res.send({ data: item });
-//     })
-//     .catch((err) => {
-//       res.status(500).send({ message: "Error creating item", err });
-//     });
-// };
-
-// module.exports = {
-//   createItem,
-// };
-
-// updated code with added fields
-
 const ClothingItem = require("../models/clothingItem");
 const ERROR_CODES = require("../utils/errors");
 
@@ -39,14 +16,6 @@ const createItem = (req, res) => {
     createdAt: Date.now(),
   };
 
-  // ClothingItem.create(newItem)
-  //   .then((item) => {
-  //     res.send({ data: item });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({ message: "Error creating item", err });
-  //   });
-
   ClothingItem.create(newItem)
     .then((item) => {
       res.send({ data: item });
@@ -64,54 +33,6 @@ const createItem = (req, res) => {
     });
 };
 
-// start new code getItems
-
-// const getItems = (req, res) => {
-//   ClothingItem.find({})
-//     .then((items) => {
-//       res.status(200).send({ data: items });
-//     })
-//     .catch((err) => {
-//       res.status(500).send({ message: "Error getting items", err });
-//     });
-// };
-
-// old getItems code
-
-// const getItems = (req, res) => {
-//   ClothingItem.findById(req.params.id)
-//     .orFail(() => {
-//       const error = new Error("Clothing item not found");
-//       error.statusCode = ERROR_CODES.NOT_FOUND;
-//       throw error;
-//     })
-//     .then((item) => res.send(item))
-//     .catch((err) => {
-//       console.error(err);
-//       res
-//         .status(err.statusCode || ERROR_CODES.SERVER_ERROR)
-//         .send({ message: err.message || "An error has occurred" });
-//     });
-// };
-
-// const getItems = (req, res) => {
-//   ClothingItem.findById(req.params.id)
-//     .then((item) => {
-//       if (!item) {
-//         res.status(200).send([]);
-//         return;
-//       }
-
-//       res.send(item);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res
-//         .status(err.statusCode || ERROR_CODES.SERVER_ERROR)
-//         .send({ message: err.message || "An error has occurred" });
-//     });
-// };
-
 const getItems = (req, res) => {
   ClothingItem.find()
     .then((items) => {
@@ -124,8 +45,6 @@ const getItems = (req, res) => {
         .send({ message: "An error has occurred" });
     });
 };
-
-// end updated getItems code
 
 // start new code updateItem
 
@@ -192,20 +111,6 @@ const deleteItem = (req, res) => {
         .send({ message: "Error deleting item" });
     });
 };
-
-// old likeItem code
-
-// const likeItem = (req, res) => {
-//   ClothingItem.findByIdAndUpdate(
-//     req.params.id,
-//     { $addToSet: { likes: req.user._id } }, // Add _id to the array if it's not there yet
-//     { new: true },
-//   )
-//     .then((item) => res.json(item))
-//     .catch((err) =>
-//       res.status(500).json({ message: "An error occurred", error: err }),
-//     );
-// };
 
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
