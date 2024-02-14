@@ -1,6 +1,6 @@
-const express = require("express");
+// const express = require("express");
 
-const router = express.Router();
+// const router = express.Router();
 
 // const { getUsers, getUser, createUser } = require("../controllers/users");
 
@@ -12,5 +12,18 @@ const router = express.Router();
 
 // POST a new user
 // router.post("/", createUser);
+
+// module.exports = router;
+
+// new code
+
+const express = require("express");
+const router = express.Router();
+const auth = require("../middlewares/auth");
+const { getCurrentUser, updateProfile } = require("../controllers/users");
+
+router.get("/me", auth, getCurrentUser);
+
+router.patch("/me", auth, updateProfile);
 
 module.exports = router;

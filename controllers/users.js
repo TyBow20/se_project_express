@@ -4,14 +4,6 @@ const bcrypt = require("bcryptjs");
 const { JWT_SECRET } = require("../utils/config");
 const ERROR_CODES = require("../utils/errors");
 
-// const ERROR_CODES = {
-//   INVALID_DATA: 400,
-//   NOT_FOUND: 404,
-//   UNAUTHORIZED: 401,
-//   CONFLICT: 409,
-//   SERVER_ERROR: 500,
-// };
-
 // GET all users
 const getUsers = (req, res) => {
   User.find({})

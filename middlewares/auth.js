@@ -1,13 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-
-const ERROR_CODES = {
-  INVALID_DATA: 400,
-  NOT_FOUND: 404,
-  UNAUTHORIZED: 401,
-  CONFLICT: 409,
-  SERVER_ERROR: 500,
-};
+const { ERROR_CODES } = require("../utils/errors");
 
 const auth = (req, res, next) => {
   try {

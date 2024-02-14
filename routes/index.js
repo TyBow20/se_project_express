@@ -3,8 +3,8 @@ const auth = require("../middlewares/auth");
 const {
   login,
   createUser,
-  getCurrentUser,
-  updateProfile,
+  // getCurrentUser,
+  // updateProfile,
 } = require("../controllers/users");
 const clothingItem = require("./clothingItems");
 const users = require("./users");
@@ -16,8 +16,8 @@ router.post("/signin", login);
 router.post("/signup", createUser);
 
 router.use("/users", auth, users);
-router.get("/users/me", getCurrentUser);
-router.patch("/users/me", auth, updateProfile);
+// router.get("/users/me", getCurrentUser);
+// router.patch("/users/me", auth, updateProfile);
 
 router.use((req, res) => {
   res.status(ERROR_CODES.NOT_FOUND).send({ message: "Route not found!" });
