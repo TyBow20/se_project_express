@@ -102,7 +102,8 @@ const login = (req, res) => {
       });
       res.status(200).json({ token });
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error("Login error: ", error);
       res
         .status(ERROR_CODES.UNAUTHORIZED)
         .json({ message: "Incorrect email or password" });
