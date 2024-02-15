@@ -90,26 +90,6 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { id } = req.params;
   console.log(id);
-  // previous code
-  // ClothingItem.findByIdAndDelete(id)
-  //   .orFail()
-  //   .then((item) => res.status(200).send({ data: item }))
-  //   .catch((err) => {
-  //     if (err.name === "CastError") {
-  //       return res
-  //         .status(ERROR_CODES.INVALID_DATA)
-  //         .send({ message: "Invalid ID format" });
-  //     }
-  //     if (err.name === "DocumentNotFoundError") {
-  //       return res
-  //         .status(ERROR_CODES.NOT_FOUND)
-  //         .send({ message: "Item not found" });
-  //     }
-
-  //     res
-  //       .status(ERROR_CODES.SERVER_ERROR)
-  //       .send({ message: "Error deleting item" });
-  //   });
 
   ClothingItem.findById(id)
     .then((item) => {
@@ -125,17 +105,22 @@ const deleteItem = (req, res) => {
           .send({ message: "Not authorized to delete this item" });
       }
 
-      return item
-        .remove()
-        .then(() =>
-          res.status(200).send({ message: "Item deleted successfully" }),
-        );
+      return item.remove();
+    })
+    .then(() => {
+      res.status(200).send({ message: "Item deleted successfully" });
     })
     .catch((err) => {
-      console.error(err);
-      res
-        .status(ERROR_CODES.SERVER_ERROR)
-        .send({ message: "Error deleting item" });
+      if (err.name === "CastError") {
+        res
+          .status(ERROR_CODES.INVALID_DATA)
+          .send({ message: "Invalid ID format" });
+      } else {
+        console.error(err);
+        res
+          .status(ERROR_CODES.SERVER_ERROR)
+          .send({ message: "Error deleting item" });
+      }
     });
 };
 

@@ -4,7 +4,7 @@ const { ERROR_CODES } = require("../utils/errors");
 
 const auth = (req, res, next) => {
   try {
-    const authorization = req.headers.authorization;
+    const { authorization } = req.headers;
 
     if (!authorization || !authorization.startsWith("Bearer ")) {
       throw new Error("Authorization token missing or malformed");

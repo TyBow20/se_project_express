@@ -69,8 +69,6 @@
 // module.exports = mongoose.model("User", userSchema);
 // module.exports = User;
 
-//updated code part 9
-
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
