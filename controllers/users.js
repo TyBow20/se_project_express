@@ -5,6 +5,7 @@ const ERROR_CODES = require("../utils/errors");
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
+
   User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
@@ -12,15 +13,16 @@ const createUser = (req, res) => {
           .status(ERROR_CODES.CONFLICT)
           .json({ message: "User with this email already exists" });
       }
-      return User.create({ name, avatar, email, password });
-    })
-    .then((user) => {
-      const userObj = user.toObject();
-      delete userObj.password;
-      res.status(201).json(userObj);
+
+      return User.create({ name, avatar, email, password }).then((user) => {
+        const userObj = user.toObject();
+        delete userObj.password;
+        res.status(201).json(userObj);
+      });
     })
     .catch((err) => {
       console.error(err);
+
       if (err.name === "ValidationError") {
         res
           .status(ERROR_CODES.INVALID_DATA)

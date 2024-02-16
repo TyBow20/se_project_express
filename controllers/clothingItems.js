@@ -86,10 +86,8 @@ const getItems = (req, res) => {
 // };
 
 // code not needed for this project
-
 const deleteItem = (req, res) => {
   const { id } = req.params;
-  console.log(id);
 
   ClothingItem.findById(id)
     .then((item) => {
@@ -105,10 +103,9 @@ const deleteItem = (req, res) => {
           .send({ message: "Not authorized to delete this item" });
       }
 
-      return item.remove();
-    })
-    .then(() => {
-      res.status(200).send({ message: "Item deleted successfully" });
+      return item.remove().then(() => {
+        res.status(200).send({ message: "Item deleted successfully" });
+      });
     })
     .catch((err) => {
       if (err.name === "CastError") {
