@@ -23,6 +23,25 @@
 // };
 
 // Kevin provided new eslint file
+// module.exports = {
+//   root: true,
+//   env: {
+//     browser: true,
+//     commonjs: true,
+//     es2021: true,
+//   },
+//   extends: ["eslint:recommended", "airbnb-base", "prettier"],
+//   overrides: [],
+//   parserOptions: {
+//     ecmaVersion: "latest",
+//   },
+//   rules: {
+//     "no-console": "off",
+//     "no-underscore-dangle": ["error", { allow: ["_id"] }],
+//     "consistent-return": "off",
+//   },
+// };
+
 module.exports = {
   root: true,
   env: {
@@ -39,5 +58,6 @@ module.exports = {
     "no-console": "off",
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
     "consistent-return": "off",
+    "no-unused-vars": ["error", { argsIgnorePattern: "next" }],
   },
 };
