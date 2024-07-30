@@ -81,9 +81,55 @@ const idValidation = celebrate({
   }),
 });
 
+const updateUserValidation = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    avatar: Joi.string().uri().required(),
+  }),
+});
+
 module.exports = {
   createItemValidation,
   userValidation,
   loginValidation,
   idValidation,
+  updateUserValidation,
 };
+
+// const { celebrate, Joi } = require("celebrate");
+
+// const userValidation = celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().required(),
+//     avatar: Joi.string().uri().required(),
+//     email: Joi.string().email().required(),
+//     password: Joi.string().required(),
+//   }),
+// });
+
+// const loginValidation = celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().email().required(),
+//     password: Joi.string().required(),
+//   }),
+// });
+
+// const idValidation = celebrate({
+//   params: Joi.object().keys({
+//     id: Joi.string().hex().length(24).required(),
+//   }),
+// });
+
+// const updateUserValidation = celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().required(),
+//     avatar: Joi.string().uri().required(),
+//   }),
+// });
+
+// module.exports = {
+//   userValidation,
+//   loginValidation,
+//   idValidation,
+//   updateUserValidation,
+// };
