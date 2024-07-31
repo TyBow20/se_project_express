@@ -131,12 +131,12 @@
 
 const ClothingItem = require("../models/clothingItem");
 const {
-  ERROR_CODES,
+  // ERROR_CODES,
   NotFoundError,
   ForbiddenError,
   InvalidDataError,
   ServerError,
-} = require("../utils/errors");
+} = require("../errors");
 
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;

@@ -1,21 +1,21 @@
 const express = require("express");
 const {
-  userValidation,
-  loginValidation,
-  idValidation,
+  // userValidation,
+  // loginValidation,
+  // idValidation,
   updateUserValidation,
 } = require("../middlewares/validation");
 const {
-  createUser,
-  login,
+  // createUser,
+  // login,
   getCurrentUser,
   updateProfile,
 } = require("../controllers/users");
 
 const router = express.Router();
 
-//router.post("/signup", userValidation, createUser);
-//router.post("/signin", loginValidation, login);
+// router.post("/signup", userValidation, createUser);
+// router.post("/signin", loginValidation, login);
 router.get("/me", getCurrentUser);
 router.patch("/me", updateUserValidation, updateProfile);
 

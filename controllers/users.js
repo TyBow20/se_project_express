@@ -1,18 +1,21 @@
 // const jwt = require("jsonwebtoken");
 // const User = require("../models/user");
 // const { JWT_SECRET } = require("../utils/config");
-// const ERROR_CODES = require("../utils/errors");
+// const {
+//   NotFoundError,
+//   InvalidDataError,
+//   ServerError,
+//   ConflictError,
+//   UnauthorizedError,
+// } = require("../utils/errors");
 
 // const createUser = (req, res, next) => {
-//   console.log("console ran");
 //   const { name, avatar, email, password } = req.body;
 
 //   User.findOne({ email })
 //     .then((existingUser) => {
 //       if (existingUser) {
-//         const error = new Error("User with this email already exists");
-//         error.statusCode = ERROR_CODES.CONFLICT;
-//         throw error;
+//         throw new ConflictError("User with this email already exists");
 //       }
 
 //       return User.create({ name, avatar, email, password }).then((user) => {
@@ -23,16 +26,12 @@
 //     })
 //     .catch((err) => {
 //       if (err.name === "ValidationError") {
-//         err.statusCode = ERROR_CODES.INVALID_DATA;
-//         err.message = "Invalid user data provided";
+//         next(new InvalidDataError("Invalid user data provided"));
 //       } else if (err.code === 11000) {
-//         err.statusCode = ERROR_CODES.CONFLICT;
-//         err.message = "User with this email already exists";
+//         next(new ConflictError("User with this email already exists"));
 //       } else {
-//         err.statusCode = ERROR_CODES.SERVER_ERROR;
-//         err.message = "An error has occurred on the server";
+//         next(new ServerError("An error has occurred on the server"));
 //       }
-//       next(err);
 //     });
 // };
 
@@ -46,10 +45,8 @@
 //       });
 //       res.status(200).json({ token });
 //     })
-//     .catch((error) => {
-//       error.statusCode = ERROR_CODES.UNAUTHORIZED;
-//       error.message = "Incorrect email or password";
-//       next(error);
+//     .catch(() => {
+//       next(new UnauthorizedError("Incorrect email or password"));
 //     });
 // };
 
@@ -57,16 +54,12 @@
 //   User.findById(req.user._id)
 //     .then((user) => {
 //       if (!user) {
-//         const error = new Error("User not found");
-//         error.statusCode = ERROR_CODES.NOT_FOUND;
-//         throw error;
+//         throw new NotFoundError("User not found");
 //       }
 //       res.status(200).json(user);
 //     })
-//     .catch((err) => {
-//       err.statusCode = ERROR_CODES.SERVER_ERROR;
-//       err.message = "Error fetching current user";
-//       next(err);
+//     .catch(() => {
+//       next(new ServerError("Error fetching current user"));
 //     });
 // };
 
@@ -78,17 +71,13 @@
 //   );
 
 //   if (!isValidOperation) {
-//     const error = new Error("Invalid updates!");
-//     error.statusCode = ERROR_CODES.INVALID_DATA;
-//     return next(error);
+//     return next(new InvalidDataError("Invalid updates!"));
 //   }
 
 //   try {
 //     const user = await User.findById(req.user._id);
 //     if (!user) {
-//       const error = new Error("User not found");
-//       error.statusCode = ERROR_CODES.NOT_FOUND;
-//       throw error;
+//       throw new NotFoundError("User not found");
 //     }
 
 //     updates.forEach((update) => {
@@ -98,23 +87,21 @@
 //     res.status(200).json(user);
 //   } catch (error) {
 //     if (error.name === "ValidationError") {
-//       error.statusCode = ERROR_CODES.INVALID_DATA;
+//       next(new InvalidDataError("Invalid user data provided"));
 //     } else {
-//       error.statusCode = ERROR_CODES.SERVER_ERROR;
-//       error.message = "Error updating user profile";
+//       next(new ServerError("Error updating user profile"));
 //     }
-//     next(error);
 //   }
 // };
 
 // module.exports = {
 //   createUser,
-//   // getUsers,
-//   // getUser,
 //   login,
 //   getCurrentUser,
 //   updateProfile,
 // };
+
+// updated code
 
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
@@ -125,7 +112,7 @@ const {
   ServerError,
   ConflictError,
   UnauthorizedError,
-} = require("../utils/errors");
+} = require("../errors");
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
@@ -147,6 +134,8 @@ const createUser = (req, res, next) => {
         next(new InvalidDataError("Invalid user data provided"));
       } else if (err.code === 11000) {
         next(new ConflictError("User with this email already exists"));
+      } else if (err.statusCode) {
+        next(err);
       } else {
         next(new ServerError("An error has occurred on the server"));
       }
@@ -163,8 +152,12 @@ const login = (req, res, next) => {
       });
       res.status(200).json({ token });
     })
-    .catch(() => {
-      next(new UnauthorizedError("Incorrect email or password"));
+    .catch((err) => {
+      if (err.message === "Unable to login") {
+        next(new UnauthorizedError("Incorrect email or password"));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -176,8 +169,12 @@ const getCurrentUser = (req, res, next) => {
       }
       res.status(200).json(user);
     })
-    .catch(() => {
-      next(new ServerError("Error fetching current user"));
+    .catch((err) => {
+      if (err.statusCode) {
+        next(err);
+      } else {
+        next(new ServerError("Error fetching current user"));
+      }
     });
 };
 
@@ -206,6 +203,8 @@ const updateProfile = async (req, res, next) => {
   } catch (error) {
     if (error.name === "ValidationError") {
       next(new InvalidDataError("Invalid user data provided"));
+    } else if (error.statusCode) {
+      next(error);
     } else {
       next(new ServerError("Error updating user profile"));
     }
